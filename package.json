@@ -1,0 +1,21 @@
+{
+  "name": "create-curriculum",
+  "version": "1.0.0",
+  "description": "A web-based curriculum generator",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "npm install && node server.js"
+  },
+  "keywords": [
+    "curriculum",
+    "docx",
+    "generator"
+  ],
+  "author": "James Gabriel",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2",
+    "docx": "^8.5.0"
+  }
+}

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Curriculum</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #1F4E78;
+            margin-bottom: 30px;
+            text-align: center;
+            font-size: 28px;
+        }
+
+        .button-group {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        button {
+            padding: 15px 30px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+
+        .btn-generate {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-generate:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-generate:active {
+            transform: translateY(0);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            display: none;
+            font-weight: bold;
+        }
+
+        .status.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .status.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .status.loading {
+            background: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+            display: block;
+        }
+
+        .info-box {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 14px;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .loader {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 0, 0, 0.1);
+            border-radius: 50%;
+            border-top-color: currentColor;
+            animation: spin 1s linear infinite;
+            margin-right: 10px;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📄 Create Curriculum</h1>
+        
+        <div class="info-box">
+            <strong>ℹ️ Information:</strong><br>
+            Click the button below to generate your curriculum document (DOCX format) with all your professional information.
+        </div>
+
+        <div class="button-group">
+            <button class="btn-generate" onclick="generateCurriculum()">Generate Curriculum</button>
+        </div>
+
+        <div id="status" class="status"></div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
+    <script>
+        async function generateCurriculum() {
+            const statusDiv = document.getElementById('status');
+            
+            try {
+                // Show loading status
+                statusDiv.className = 'status loading';
+                statusDiv.innerHTML = '<span class="loader"></span>Generating curriculum...';
+
+                // Fetch curriculum data from API
+                const response = await fetch('/api/generate');
+                const data = await response.json();
+
+                if (data.success) {
+                    // Download the generated file
+                    const blob = new Blob([data.document], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                    const url = window.URL.createObjectURL(blob);
+                    const link = document.createElement('a');
+                    link.href = url;
+                    link.download = 'Curriculum_James_Gabriel.docx';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(url);
+
+                    // Show success status
+                    statusDiv.className = 'status success';
+                    statusDiv.innerHTML = '✓ Curriculum generated successfully!';
+                } else {
+                    throw new Error(data.error || 'Failed to generate curriculum');
+                }
+            } catch (error) {
+                // Show error status
+                statusDiv.className = 'status error';
+                statusDiv.innerHTML = '✗ Error: ' + error.message;
+                console.error(error);
+            }
+        }
+    </script>
+</body>
+</html>
