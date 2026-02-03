@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Curriculum</title>
+    <title>Editor de Currículo</title>
     <style>
         * {
             margin: 0;
@@ -12,39 +12,183 @@
         }
 
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
             padding: 20px;
         }
 
-        .container {
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        @media (max-width: 968px) {
+            .main-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
             background: white;
             border-radius: 10px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 500px;
-            width: 100%;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
-        h1 {
+        .panel-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .panel-content {
+            padding: 30px;
+            overflow-y: auto;
+            flex: 1;
+            max-height: calc(100vh - 120px);
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        input[type="tel"],
+        textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 5px;
+            font-family: Arial, sans-serif;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        input[type="tel"]:focus,
+        textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .section-divider {
+            border-top: 2px solid #667eea;
+            margin: 25px 0 20px 0;
+            padding-top: 15px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: bold;
             color: #1F4E78;
-            margin-bottom: 30px;
-            text-align: center;
-            font-size: 28px;
+            margin-bottom: 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .add-btn {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+
+        .add-btn:hover {
+            background: #5568d3;
+        }
+
+        .entry-item {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 12px;
+            position: relative;
+        }
+
+        .entry-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .entry-item-title {
+            font-weight: bold;
+            color: #1F4E78;
+            flex: 1;
+        }
+
+        .remove-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 11px;
+            transition: background 0.3s;
+        }
+
+        .remove-btn:hover {
+            background: #c82333;
+        }
+
+        .entry-input {
+            margin-bottom: 10px;
+        }
+
+        .entry-input label {
+            font-size: 13px;
+        }
+
+        .entry-input input,
+        .entry-input textarea {
+            font-size: 13px;
+            padding: 8px;
         }
 
         .button-group {
             display: flex;
-            flex-direction: column;
-            gap: 15px;
+            gap: 10px;
+            padding: 20px 30px;
+            background: #f8f9fa;
+            border-top: 1px solid #e0e0e0;
         }
 
         button {
-            padding: 15px 30px;
+            flex: 1;
+            padding: 14px 20px;
             font-size: 16px;
             border: none;
             border-radius: 5px;
@@ -63,17 +207,29 @@
             box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
         }
 
-        .btn-generate:active {
-            transform: translateY(0);
+        .btn-generate:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-reset {
+            background: #f0f0f0;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .btn-reset:hover {
+            background: #e8e8e8;
         }
 
         .status {
-            margin-top: 20px;
-            padding: 15px;
+            margin-top: 15px;
+            padding: 12px;
             border-radius: 5px;
             text-align: center;
             display: none;
             font-weight: bold;
+            font-size: 14px;
         }
 
         .status.success {
@@ -97,86 +253,571 @@
             display: block;
         }
 
-        .info-box {
-            background: #f8f9fa;
-            border-left: 4px solid #667eea;
-            padding: 15px;
-            margin-bottom: 20px;
-            border-radius: 5px;
-            font-size: 14px;
-            color: #333;
-            line-height: 1.6;
-        }
-
         .loader {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(0, 0, 0, 0.1);
+            width: 16px;
+            height: 16px;
+            border: 2px solid rgba(0, 0, 0, 0.1);
             border-radius: 50%;
             border-top-color: currentColor;
             animation: spin 1s linear infinite;
-            margin-right: 10px;
+            margin-right: 8px;
         }
 
         @keyframes spin {
             to { transform: rotate(360deg); }
         }
+
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #667eea;
+            padding: 12px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+            font-size: 13px;
+            color: #1565c0;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>📄 Create Curriculum</h1>
-        
-        <div class="info-box">
-            <strong>ℹ️ Information:</strong><br>
-            Click the button below to generate your curriculum document (DOCX format) with all your professional information.
+    <div class="main-container">
+        <!-- Editor Panel -->
+        <div class="panel">
+            <div class="panel-header">📝 Editor de Currículo</div>
+            <div class="panel-content">
+                <div class="info-box">
+                    Edite suas informações e adicione as seções. Os dados são salvos automaticamente.
+                </div>
+
+                <!-- Dados Pessoais -->
+                <div class="form-group">
+                    <label for="fullName">Nome Completo*</label>
+                    <input type="text" id="fullName" placeholder="Seu nome completo" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Localização</label>
+                    <input type="text" id="location" placeholder="Cidade - Estado">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Telefone</label>
+                    <input type="tel" id="phone" placeholder="(00) 9999-9999">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" placeholder="seu.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="linkedin">LinkedIn</label>
+                    <input type="text" id="linkedin" placeholder="linkedin.com/in/seu-perfil">
+                </div>
+
+                <div class="form-group">
+                    <label for="github">GitHub</label>
+                    <input type="text" id="github" placeholder="github.com/seu-usuario">
+                </div>
+
+                <!-- Resumo Profissional -->
+                <div class="section-divider"></div>
+                <div class="section-title">Resumo Profissional</div>
+
+                <div class="form-group">
+                    <label for="summary">Resumo</label>
+                    <textarea id="summary" placeholder="Descreva seu perfil profissional..."></textarea>
+                </div>
+
+                <!-- Stack Tecnológico -->
+                <div class="section-divider"></div>
+                <div class="section-title">Stack Tecnológico</div>
+
+                <div class="form-group">
+                    <label for="languages">Linguagens</label>
+                    <textarea id="languages" placeholder="Python, Java, JavaScript, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="frameworks">Frameworks</label>
+                    <textarea id="frameworks" placeholder="Spring Boot, Django, Node.js, React, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="databases">Bancos de Dados</label>
+                    <textarea id="databases" placeholder="MySQL, MongoDB, PostgreSQL, etc."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="tools">Ferramentas & DevOps</label>
+                    <textarea id="tools" placeholder="Docker, Git, CI/CD, Kubernetes, etc."></textarea>
+                </div>
+
+                <!-- Experiência Profissional -->
+                <div class="section-divider"></div>
+                <div class="section-title">
+                    💼 Experiência Profissional
+                    <button class="add-btn" onclick="addExperience()">+ Adicionar</button>
+                </div>
+                <div id="experienceList"></div>
+
+                <!-- Formação Acadêmica -->
+                <div class="section-divider"></div>
+                <div class="section-title">
+                    🎓 Formação Acadêmica
+                    <button class="add-btn" onclick="addEducation()">+ Adicionar</button>
+                </div>
+                <div id="educationList"></div>
+
+                <!-- Projetos -->
+                <div class="section-divider"></div>
+                <div class="section-title">
+                    🚀 Projetos
+                    <button class="add-btn" onclick="addProject()">+ Adicionar</button>
+                </div>
+                <div id="projectList"></div>
+
+                <!-- Idiomas -->
+                <div class="section-divider"></div>
+                <div class="section-title">
+                    🌐 Idiomas
+                    <button class="add-btn" onclick="addLanguage()">+ Adicionar</button>
+                </div>
+                <div id="languageList"></div>
+
+                <!-- Certificações -->
+                <div class="section-divider"></div>
+                <div class="section-title">
+                    🏆 Certificações
+                    <button class="add-btn" onclick="addCertification()">+ Adicionar</button>
+                </div>
+                <div id="certificationList"></div>
+            </div>
+
+            <div class="button-group">
+                <button class="btn-reset" onclick="resetForm()">Limpar</button>
+                <button class="btn-generate" onclick="generateCurriculum()" id="generateBtn">Gerar Currículo</button>
+            </div>
+            <div id="status" class="status"></div>
         </div>
 
-        <div class="button-group">
-            <button class="btn-generate" onclick="generateCurriculum()">Generate Curriculum</button>
+        <!-- Preview Panel -->
+        <div class="panel">
+            <div class="panel-header">👁️ Pré-visualização</div>
+            <div class="panel-content" id="previewContent">
+                <div id="preview"></div>
+            </div>
         </div>
-
-        <div id="status" class="status"></div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/8.5.0/docx.min.js"></script>
     <script>
+        const defaultData = {
+            fullName: 'JAMES GABRIEL BES FONTANA',
+            location: 'Cafelândia - PR',
+            phone: '(45) 99933-3520',
+            email: 'jamesbesfontana@outlook.com',
+            linkedin: 'linkedin.com/in/james-gabriel-bes-fontana',
+            github: 'github.com/jamesgabriel8917',
+            summary: 'Desenvolvedor Python especializado em RPA.',
+            languages: 'Python, Java, JavaScript',
+            frameworks: 'Spring Boot, Django, Node.js',
+            databases: 'MySQL, MongoDB, PostgreSQL',
+            tools: 'Docker, Git, CI/CD',
+            experiences: [{ title: 'Desenvolvedor Python', company: 'Empresa', period: '2022 - Presente', description: 'Desenvolvimento de automações.' }],
+            education: [{ course: 'Engenharia de Software', institution: 'Universidade', period: '2018 - 2022' }],
+            projects: [],
+            languages_list: [],
+            certifications: []
+        };
+
+        window.addEventListener('DOMContentLoaded', () => {
+            loadData();
+            renderEntries();
+            updatePreview();
+        });
+
+        document.querySelectorAll('input[id], textarea[id]').forEach(field => {
+            field.addEventListener('input', () => {
+                updatePreview();
+                saveData();
+            });
+        });
+
+        function getData() {
+            return {
+                fullName: document.getElementById('fullName').value,
+                location: document.getElementById('location').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                linkedin: document.getElementById('linkedin').value,
+                github: document.getElementById('github').value,
+                summary: document.getElementById('summary').value,
+                languages: document.getElementById('languages').value,
+                frameworks: document.getElementById('frameworks').value,
+                databases: document.getElementById('databases').value,
+                tools: document.getElementById('tools').value,
+                experiences: window.experiencesList || [],
+                education: window.educationList || [],
+                projects: window.projectsList || [],
+                languages_list: window.languagesList || [],
+                certifications: window.certificationsList || []
+            };
+        }
+
+        function setData(data) {
+            document.getElementById('fullName').value = data.fullName || '';
+            document.getElementById('location').value = data.location || '';
+            document.getElementById('phone').value = data.phone || '';
+            document.getElementById('email').value = data.email || '';
+            document.getElementById('linkedin').value = data.linkedin || '';
+            document.getElementById('github').value = data.github || '';
+            document.getElementById('summary').value = data.summary || '';
+            document.getElementById('languages').value = data.languages || '';
+            document.getElementById('frameworks').value = data.frameworks || '';
+            document.getElementById('databases').value = data.databases || '';
+            document.getElementById('tools').value = data.tools || '';
+            
+            window.experiencesList = data.experiences || [];
+            window.educationList = data.education || [];
+            window.projectsList = data.projects || [];
+            window.languagesList = data.languages_list || [];
+            window.certificationsList = data.certifications || [];
+        }
+
+        function loadData() {
+            const saved = localStorage.getItem('curriculumData');
+            if (saved) {
+                setData(JSON.parse(saved));
+            } else {
+                setData(defaultData);
+            }
+        }
+
+        function saveData() {
+            localStorage.setItem('curriculumData', JSON.stringify(getData()));
+        }
+
+        function updatePreview() {
+            const data = getData();
+            
+            let preview = `
+                <div style="padding: 15px; background: #f8f9fa; border-radius: 8px; line-height: 1.6; font-size: 13px;">
+                    <div style="text-align: center; border-bottom: 2px solid #667eea; padding-bottom: 10px; margin-bottom: 15px;">
+                        <div style="font-size: 18px; font-weight: bold; color: #1F4E78;">
+                            ${data.fullName || 'SEU NOME'}
+                        </div>
+                        <div style="font-size: 11px; color: #666; margin-top: 5px;">
+                            ${data.location ? '📍 ' + data.location + ' | ' : ''}
+                            ${data.phone ? '📱 ' + data.phone : ''}
+                        </div>
+                        <div style="font-size: 11px; color: #666;">
+                            ${data.email ? '✉️ ' + data.email + ' | ' : ''}
+                            ${data.linkedin ? '💼 ' + data.linkedin : ''}
+                        </div>
+                    </div>
+            `;
+
+            if (data.summary) {
+                preview += `<div style="margin-bottom: 12px;"><strong>📋 RESUMO:</strong> ${data.summary.substring(0, 80)}...</div>`;
+            }
+
+            if (data.experiences && data.experiences.length > 0) {
+                preview += `<div style="margin-bottom: 12px;"><strong>💼 EXPERIÊNCIA:</strong><br>`;
+                data.experiences.forEach(exp => {
+                    if (exp.title) preview += `${exp.title} - ${exp.company} (${exp.period})<br>`;
+                });
+                preview += `</div>`;
+            }
+
+            if (data.education && data.education.length > 0) {
+                preview += `<div style="margin-bottom: 12px;"><strong>🎓 FORMAÇÃO:</strong><br>`;
+                data.education.forEach(edu => {
+                    if (edu.course) preview += `${edu.course} - ${edu.institution}<br>`;
+                });
+                preview += `</div>`;
+            }
+
+            if (data.projects && data.projects.length > 0) {
+                preview += `<div style="margin-bottom: 12px;"><strong>🚀 PROJETOS:</strong><br>`;
+                data.projects.forEach(proj => {
+                    if (proj.name) preview += `${proj.name}<br>`;
+                });
+                preview += `</div>`;
+            }
+
+            preview += `</div>`;
+            document.getElementById('preview').innerHTML = preview;
+        }
+
+        // Experiências
+        function addExperience() {
+            if (!window.experiencesList) window.experiencesList = [];
+            window.experiencesList.push({ title: '', company: '', period: '', description: '' });
+            renderEntries();
+            updatePreview();
+        }
+
+        function removeExperience(i) {
+            window.experiencesList.splice(i, 1);
+            renderEntries();
+            updatePreview();
+        }
+
+        // Educação
+        function addEducation() {
+            if (!window.educationList) window.educationList = [];
+            window.educationList.push({ course: '', institution: '', period: '' });
+            renderEntries();
+            updatePreview();
+        }
+
+        function removeEducation(i) {
+            window.educationList.splice(i, 1);
+            renderEntries();
+            updatePreview();
+        }
+
+        // Projetos
+        function addProject() {
+            if (!window.projectsList) window.projectsList = [];
+            window.projectsList.push({ name: '', description: '', technologies: '' });
+            renderEntries();
+            updatePreview();
+        }
+
+        function removeProject(i) {
+            window.projectsList.splice(i, 1);
+            renderEntries();
+            updatePreview();
+        }
+
+        // Idiomas
+        function addLanguage() {
+            if (!window.languagesList) window.languagesList = [];
+            window.languagesList.push({ language: '', proficiency: '' });
+            renderEntries();
+            updatePreview();
+        }
+
+        function removeLanguage(i) {
+            window.languagesList.splice(i, 1);
+            renderEntries();
+            updatePreview();
+        }
+
+        // Certificações
+        function addCertification() {
+            if (!window.certificationsList) window.certificationsList = [];
+            window.certificationsList.push({ name: '', issuer: '', year: '' });
+            renderEntries();
+            updatePreview();
+        }
+
+        function removeCertification(i) {
+            window.certificationsList.splice(i, 1);
+            renderEntries();
+            updatePreview();
+        }
+
+        function renderEntries() {
+            // Experiências
+            document.getElementById('experienceList').innerHTML = (window.experiencesList || []).map((exp, i) => `
+                <div class="entry-item">
+                    <div class="entry-item-header">
+                        <div class="entry-item-title">${exp.title || 'Nova Experiência'}</div>
+                        <button class="remove-btn" onclick="removeExperience(${i})">Remover</button>
+                    </div>
+                    <div class="entry-input">
+                        <label>Cargo</label>
+                        <input type="text" value="${exp.title}" onchange="updateExp(${i}, 'title', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Empresa</label>
+                        <input type="text" value="${exp.company}" onchange="updateExp(${i}, 'company', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Período</label>
+                        <input type="text" value="${exp.period}" onchange="updateExp(${i}, 'period', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Descrição</label>
+                        <textarea onchange="updateExp(${i}, 'description', this.value);">${exp.description}</textarea>
+                    </div>
+                </div>
+            `).join('');
+
+            // Educação
+            document.getElementById('educationList').innerHTML = (window.educationList || []).map((edu, i) => `
+                <div class="entry-item">
+                    <div class="entry-item-header">
+                        <div class="entry-item-title">${edu.course || 'Nova Formação'}</div>
+                        <button class="remove-btn" onclick="removeEducation(${i})">Remover</button>
+                    </div>
+                    <div class="entry-input">
+                        <label>Curso</label>
+                        <input type="text" value="${edu.course}" onchange="updateEdu(${i}, 'course', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Instituição</label>
+                        <input type="text" value="${edu.institution}" onchange="updateEdu(${i}, 'institution', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Período</label>
+                        <input type="text" value="${edu.period}" onchange="updateEdu(${i}, 'period', this.value);">
+                    </div>
+                </div>
+            `).join('');
+
+            // Projetos
+            document.getElementById('projectList').innerHTML = (window.projectsList || []).map((proj, i) => `
+                <div class="entry-item">
+                    <div class="entry-item-header">
+                        <div class="entry-item-title">${proj.name || 'Novo Projeto'}</div>
+                        <button class="remove-btn" onclick="removeProject(${i})">Remover</button>
+                    </div>
+                    <div class="entry-input">
+                        <label>Nome</label>
+                        <input type="text" value="${proj.name}" onchange="updateProj(${i}, 'name', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Descrição</label>
+                        <textarea onchange="updateProj(${i}, 'description', this.value);">${proj.description}</textarea>
+                    </div>
+                    <div class="entry-input">
+                        <label>Tecnologias</label>
+                        <input type="text" value="${proj.technologies}" onchange="updateProj(${i}, 'technologies', this.value);">
+                    </div>
+                </div>
+            `).join('');
+
+            // Idiomas
+            document.getElementById('languageList').innerHTML = (window.languagesList || []).map((lang, i) => `
+                <div class="entry-item">
+                    <div class="entry-item-header">
+                        <div class="entry-item-title">${lang.language || 'Novo Idioma'}</div>
+                        <button class="remove-btn" onclick="removeLanguage(${i})">Remover</button>
+                    </div>
+                    <div class="entry-input">
+                        <label>Idioma</label>
+                        <input type="text" value="${lang.language}" onchange="updateLang(${i}, 'language', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Proficiência</label>
+                        <input type="text" value="${lang.proficiency}" onchange="updateLang(${i}, 'proficiency', this.value);">
+                    </div>
+                </div>
+            `).join('');
+
+            // Certificações
+            document.getElementById('certificationList').innerHTML = (window.certificationsList || []).map((cert, i) => `
+                <div class="entry-item">
+                    <div class="entry-item-header">
+                        <div class="entry-item-title">${cert.name || 'Nova Certificação'}</div>
+                        <button class="remove-btn" onclick="removeCertification(${i})">Remover</button>
+                    </div>
+                    <div class="entry-input">
+                        <label>Nome</label>
+                        <input type="text" value="${cert.name}" onchange="updateCert(${i}, 'name', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Emissor</label>
+                        <input type="text" value="${cert.issuer}" onchange="updateCert(${i}, 'issuer', this.value);">
+                    </div>
+                    <div class="entry-input">
+                        <label>Ano</label>
+                        <input type="text" value="${cert.year}" onchange="updateCert(${i}, 'year', this.value);">
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function updateExp(i, field, value) {
+            window.experiencesList[i][field] = value;
+            saveData();
+            updatePreview();
+        }
+
+        function updateEdu(i, field, value) {
+            window.educationList[i][field] = value;
+            saveData();
+            updatePreview();
+        }
+
+        function updateProj(i, field, value) {
+            window.projectsList[i][field] = value;
+            saveData();
+            updatePreview();
+        }
+
+        function updateLang(i, field, value) {
+            window.languagesList[i][field] = value;
+            saveData();
+            updatePreview();
+        }
+
+        function updateCert(i, field, value) {
+            window.certificationsList[i][field] = value;
+            saveData();
+            updatePreview();
+        }
+
+        function resetForm() {
+            setData(defaultData);
+            renderEntries();
+            updatePreview();
+        }
+
         async function generateCurriculum() {
             const statusDiv = document.getElementById('status');
+            const btn = document.getElementById('generateBtn');
             
             try {
-                // Show loading status
+                const data = getData();
+
+                if (!data.fullName.trim()) {
+                    statusDiv.className = 'status error';
+                    statusDiv.innerHTML = '✗ Por favor, preencha o nome completo';
+                    return;
+                }
+
+                btn.disabled = true;
                 statusDiv.className = 'status loading';
-                statusDiv.innerHTML = '<span class="loader"></span>Generating curriculum...';
+                statusDiv.innerHTML = '<span class="loader"></span>Gerando...';
 
-                // Fetch curriculum data from API
-                const response = await fetch('/api/generate');
-                const data = await response.json();
+                const response = await fetch('/api/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
 
-                if (data.success) {
-                    // Download the generated file
-                    const blob = new Blob([data.document], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                const result = await response.json();
+
+                if (result.success) {
+                    const binaryString = atob(result.document);
+                    const bytes = new Uint8Array(binaryString.length);
+                    for (let i = 0; i < binaryString.length; i++) bytes[i] = binaryString.charCodeAt(i);
+                    const blob = new Blob([bytes], { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+                    
                     const url = window.URL.createObjectURL(blob);
                     const link = document.createElement('a');
                     link.href = url;
-                    link.download = 'Curriculum_James_Gabriel.docx';
+                    link.download = `Curriculo_${data.fullName.replace(/\s+/g, '_')}.docx`;
                     document.body.appendChild(link);
                     link.click();
                     document.body.removeChild(link);
                     window.URL.revokeObjectURL(url);
 
-                    // Show success status
                     statusDiv.className = 'status success';
-                    statusDiv.innerHTML = '✓ Curriculum generated successfully!';
+                    statusDiv.innerHTML = '✓ Currículo gerado com sucesso!';
                 } else {
-                    throw new Error(data.error || 'Failed to generate curriculum');
+                    throw new Error(result.error);
                 }
             } catch (error) {
-                // Show error status
                 statusDiv.className = 'status error';
-                statusDiv.innerHTML = '✗ Error: ' + error.message;
-                console.error(error);
+                statusDiv.innerHTML = '✗ Erro: ' + error.message;
+            } finally {
+                btn.disabled = false;
             }
         }
     </script>

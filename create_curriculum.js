@@ -59,6 +59,7 @@ const doc = new Document({
         margin: { top: 1440, right: 1440, bottom: 1440, left: 1440 } // 1 inch margins
       }
     },
+    
     children: [
       // Cabeçalho com nome
       new Paragraph({
